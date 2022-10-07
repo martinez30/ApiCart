@@ -1,4 +1,5 @@
-﻿using ApiCart.Repositories;
+﻿using ApiCart.Domain;
+using ApiCart.Repositories;
 using ApiCart.Repositories.Interfaces;
 using ApiCart.Services;
 using ApiCart.Services.Interfaces;
@@ -27,9 +28,6 @@ namespace ApiCart
 
             DependencyInjections(services);
 
-            //services.AddHealthChecks();
-            //services.AddAuthorization();
-            //services.AddAuthentication();
 
             #region Swagger
             services.AddSwaggerGen(c =>
@@ -63,9 +61,6 @@ namespace ApiCart
             });
 
             app.UseRouting();
-
-            //app.UseAuthentication();
-            //app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {

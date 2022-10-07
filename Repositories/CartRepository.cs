@@ -5,7 +5,12 @@ namespace ApiCart.Repositories
 {
     public class CartRepository : ICartRepository
     {
-        Context _context = new Context();
+        Context _context;
+
+        public CartRepository()
+        {
+            _context = new Context();
+        }
 
         public async Task<IList<Cart>> ListAll()
         {
