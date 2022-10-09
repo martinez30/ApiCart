@@ -3,6 +3,7 @@ using ApiCart.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore;
+using Newtonsoft.Json;
 
 namespace ApiCart.Controllers
 {
@@ -17,7 +18,8 @@ namespace ApiCart.Controllers
         }
 
         [HttpGet("listAll")]
-        [Produces("application/json")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
         public async Task<IActionResult> ListAll()
         {
             try
@@ -31,7 +33,25 @@ namespace ApiCart.Controllers
             }
         }
 
-        [HttpPost("create")]
+        [HttpGet("get/{id}")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(404)]
+        public async Task<IActionResult> GetByID(long id)
+        {
+            try
+            {
+                var cart = await _service.GetByID(id);
+                return Ok(cart);
+            }
+            catch(Exception ex)
+            {
+                return NotFound(ex.Message);
+            }
+        }
+
+        [HttpPost("create/{id}")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
         public async Task<IActionResult> Insert([FromBody]ProductModel product, long id)
         {
             try
@@ -45,13 +65,15 @@ namespace ApiCart.Controllers
             }
         }
 
-        [HttpPut("update")]
-        public async Task<IActionResult> Update([FromBody] ProductModel product, long id)
+        [HttpDelete("delete/product/{idCart}/{idProduct}")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+        public async Task<IActionResult> DeleteProduct(long idCart, long idProduct)
         {
             try
             {
-                var update = await _service.Update(product, id);
-                return Ok(update);
+                await _service.DeleteProduct(idCart, idProduct);
+                return Ok();
             }
             catch(Exception ex)
             {
@@ -60,18 +82,36 @@ namespace ApiCart.Controllers
         }
 
         [HttpDelete("delete/{id}")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
         public async Task<IActionResult> delete(int id)
         {
-            var delete = await _service.Delete(id);
-            return Ok(delete);
+            try
+            {
+                await _service.Delete(id);
+                return Ok();
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpPost("finish/{id}")]
         [Produces("application/json")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
         public async Task<IActionResult> finish(int id)
         {
-            var finished = await _service.Finish(id);
-            return Ok(finished);
+            try
+            {
+                var finished = await _service.Finish(id);
+                return Ok(finished);
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }

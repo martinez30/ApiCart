@@ -4,11 +4,11 @@ namespace ApiCart.Services.Interfaces
 {
     public interface ICartService
     {
-        Task<IEnumerable<CartModel>> ListAll();
+        Task<List<CartModel>> ListAll();
         Task<CartModel> GetByID(long id);
         Task<CartModel> Create(ProductModel product, long idCart);
-        Task<CartModel> Update(ProductModel product, long idCart);
         Task<FinishCartModel> Finish(int id);
-        Task<bool> Delete(int id);
+        Task DeleteProduct(long idCart, long idProduct);
+        Task Delete(int id);
     }
 }

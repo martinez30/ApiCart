@@ -16,21 +16,22 @@ namespace ApiCart.Services
             _repository = repository;
         }
 
-        public async Task<IEnumerable<CartModel>> ListAll()
+        public async Task<List<CartModel>> ListAll()
         {
             var _listAll = await _repository.ListAll();
-            return _listAll.Select(c => new CartModel(c));
+            return _listAll.Select(c => new CartModel(c)).ToList();
         }
 
         public async Task<CartModel> GetByID(long id)
         {
             var cart = await _repository.GetByID(id);
-            if (cart == null) throw new NullReferenceException();
+            if (cart.Id == 0) throw new FileNotFoundException();
             return new CartModel(cart);
         }
 
         public async Task<CartModel> Create(ProductModel productModel, long idCart)
         {
+            if (idCart == 0) throw new ArgumentException("ID do carrinho é inválido");
             var product = new Product
             {
                 Id = _generate.GenerateRandomID(),
@@ -45,39 +46,29 @@ namespace ApiCart.Services
             return new CartModel(_cart);
         }
 
-        public async Task<CartModel> Update(ProductModel productModel, long idCart)
-        {
-            var product = new Product
-            {
-                Id = productModel.Id,
-                DataUpdate = DateTime.Now,
-                Name = productModel.Name,
-                Code = productModel.Code,
-                Quantity = productModel.Quantity,
-                Value = productModel.Value
-            };
-
-            var _cart = await _repository.Update(product, idCart);
-            return new CartModel(_cart);
-        }
 
         public async Task<FinishCartModel> Finish(int id)
         {
             var finishCartModel = new FinishCartModel();
             var _cart = await _repository.GetByID(id);
             if (_cart.Id == 0) throw new NullReferenceException();
-            finishCartModel.Quantity = _cart.Products.Count();
             foreach (var product in _cart.Products)
             {
-                finishCartModel.TotalValue += product.Value;
+                finishCartModel.Quantity += product.Quantity;
+                finishCartModel.TotalValue += product.Value * product.Quantity;
             }
             return finishCartModel;
 
         }
 
-        public async Task<bool> Delete(int id)
+        public async Task DeleteProduct(long idCart, long idProduct)
         {
-            return await _repository.Delete(id);
+            await _repository.DeleteProduct(idCart, idProduct);
+        }
+
+        public async Task Delete(int id)
+        {
+            await _repository.Delete(id);
         }
     }
 }

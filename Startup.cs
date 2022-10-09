@@ -57,7 +57,7 @@ namespace ApiCart
             app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Shop Mais API");
-                c.RoutePrefix = "api/docs";
+                c.RoutePrefix = "swagger";
             });
 
             app.UseRouting();

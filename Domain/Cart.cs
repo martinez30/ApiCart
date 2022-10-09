@@ -1,7 +1,8 @@
 ﻿namespace ApiCart.Domain
 {
-    public class Cart : Base
+    public class Cart
     {
-        public IList<Product> Products = new List<Product>();
+        public long Id { get; set; }
+        public List<Product> Products = new List<Product>();
     }
 }

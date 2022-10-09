@@ -12,52 +12,50 @@ namespace ApiCart.Repositories
             _context = new Context();
         }
 
-        public async Task<IList<Cart>> ListAll()
+        public async Task<List<Cart>> ListAll()
         {
-            return await Task.FromResult(_context.Carts);
+            return await Task.FromResult(_context.Get());
         }
 
         public async Task<Cart> GetByID(long id)
         {
-            var cart = _context.Carts.Where(c => c.Id == id).FirstOrDefault();
+            var cart = _context.Get().Where(c => c.Id == id).FirstOrDefault();
             return await Task.FromResult(cart ?? new Cart { Id = 0});
         }
 
         public async Task<Cart> Create(Product product, long id)
         {
-            var cart = _context.Carts.Where(c => c.Id == id).FirstOrDefault();
+            var cart = _context.Get().Where(c => c.Id == id).FirstOrDefault();
             if(cart == null)
             {
-                cart = new Cart { Id = id, DataCreate = DateTime.Now, Products = new List<Product>()};
+                cart = new Cart { Id = id, Products = new List<Product>()};
                 cart.Products.Add(product);
-                _context.Carts.Add(cart);
+                _context.Add(cart);
             }
             else
             {
                 cart.Products?.Add(product);
-                cart.DataUpdate = DateTime.Now;
             }
 
             return await Task.FromResult(cart);
         }
 
-        public async Task<Cart> Update(Product product, long id)
+        public async Task DeleteProduct(long idCart, long idProduct)
         {
-            var cart = _context.Carts.Where(c => c.Id == id).FirstOrDefault() ?? new Cart();
-            cart.DataUpdate = DateTime.Now;
-            cart.Products?.Add(product);
-
-            _context.Carts.Add(cart);
-
-            return await Task.FromResult(cart);
+            var cart = _context.Get().Where(c => c.Id == idCart).FirstOrDefault();
+            if (cart == null) throw new FileNotFoundException("Carrinho não encontrado");
+            var product = cart?.Products.Where(c => c.Id == idProduct).FirstOrDefault();
+            if (product == null) throw new FileNotFoundException("Produto não encontrado");
+            cart.Products.Remove(product);
+            await Task.FromResult(true);
         }
 
-        public async Task<bool> Delete(long id)
+        public async Task Delete(long id)
         {
-            var cart = _context.Carts.Where(c => c.Id == id).FirstOrDefault();
-            if (cart == null) return await Task.FromResult(false);
-            _context.Carts.Remove(cart);
-            return await Task.FromResult(true);
+            var cart = _context.Get().Where(c => c.Id == id).FirstOrDefault();
+            if (cart == null) throw new FileNotFoundException("Carrinho não encontrado");
+            _context.Remove(cart);
+            await Task.FromResult(true);
         }
     }
 }
