@@ -7,7 +7,7 @@ namespace ApiCart.Models
     public class CartModel
     {
         public long Id { get; set; }
-        public List<ProductModel> Products = new List<ProductModel>();
+        public List<ProductModel> Products { get; set; }
 
         public CartModel(Cart cart)
         {
