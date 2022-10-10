@@ -57,7 +57,7 @@ namespace ApiCart.Controllers
             try
             {
                 var create = await _service.Create(produtos);
-                return NoContent();
+                return Ok(create);
             }
             catch(Exception ex)
             {
