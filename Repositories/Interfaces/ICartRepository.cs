@@ -1,4 +1,6 @@
-﻿using ApiCart.Domain;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using ApiCart.Domain;
 
 namespace ApiCart.Repositories.Interfaces
 {
@@ -6,8 +8,9 @@ namespace ApiCart.Repositories.Interfaces
     {
         Task<List<Cart>> ListAll();
         Task<Cart> GetByID(long id);
-        Task<Cart> Create(Product product, long id);
-        Task DeleteProduct(long idCart, long idProduct);
-        Task Delete(long id);
+        Task<Cart> CreateCart(List<ProductCart> products);
+        Task<Cart> IncludeNewProduct(long id, long idProduct);
+        Task DeleteProductByIdCart(long idCart, long idProduct);
+        Task DeleteCart(long id);
     }
 }

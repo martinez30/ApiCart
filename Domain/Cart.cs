@@ -1,8 +1,10 @@
-﻿namespace ApiCart.Domain
+﻿using System.Collections.Generic;
+
+namespace ApiCart.Domain
 {
     public class Cart
     {
         public long Id { get; set; }
-        public List<Product> Products = new List<Product>();
+        public List<ProductCart> Products = new List<ProductCart>();
     }
 }

@@ -14,9 +14,6 @@ namespace ApiCart.Models
         {
             this.Id = product.Id;
             this.Name = product.Name;
-            this.DataCreate = product.DataCreate;
-            this.DataUpdate = product.DataUpdate;
-            this.DataDelete = product.DataDelete;
             this.Code = product.Code;
             this.Quantity = product.Quantity;
             this.Value = product.Value;

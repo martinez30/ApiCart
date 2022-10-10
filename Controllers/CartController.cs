@@ -1,14 +1,17 @@
 ﻿using ApiCart.Models;
 using ApiCart.Services.Interfaces;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Swashbuckle.AspNetCore;
-using Newtonsoft.Json;
+using System.Threading.Tasks;
+using System;
+using System.Collections.Generic;
 
 namespace ApiCart.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
+    [Route("api/[controller]")]
+    [Produces("application/json")]
+    [ProducesResponseType(typeof(String), 400)]
+    [ProducesResponseType(typeof(String), 404)]
     public class CartController : ControllerBase
     {
         private readonly ICartService _service;
@@ -18,8 +21,7 @@ namespace ApiCart.Controllers
         }
 
         [HttpGet("listAll")]
-        [ProducesResponseType(200)]
-        [ProducesResponseType(400)]
+        [ProducesResponseType(typeof(List<CartModel>), 200)]
         public async Task<IActionResult> ListAll()
         {
             try
@@ -34,8 +36,7 @@ namespace ApiCart.Controllers
         }
 
         [HttpGet("get/{id}")]
-        [ProducesResponseType(200)]
-        [ProducesResponseType(404)]
+        [ProducesResponseType(typeof(CartModel), 200)]
         public async Task<IActionResult> GetByID(long id)
         {
             try
@@ -49,15 +50,14 @@ namespace ApiCart.Controllers
             }
         }
 
-        [HttpPost("create/{id}")]
-        [ProducesResponseType(200)]
-        [ProducesResponseType(400)]
-        public async Task<IActionResult> Insert([FromBody]ProductModel product, long id)
+        [HttpPost("create")]
+        [ProducesResponseType(204)]
+        public async Task<IActionResult> Insert([FromBody] List<ProductCartModel> produtos)
         {
             try
             {
-                var create = await _service.Create(product, id);
-                return Ok();
+                var create = await _service.Create(produtos);
+                return NoContent();
             }
             catch(Exception ex)
             {
@@ -66,14 +66,13 @@ namespace ApiCart.Controllers
         }
 
         [HttpDelete("delete/product/{idCart}/{idProduct}")]
-        [ProducesResponseType(200)]
-        [ProducesResponseType(400)]
+        [ProducesResponseType(204)]
         public async Task<IActionResult> DeleteProduct(long idCart, long idProduct)
         {
             try
             {
-                await _service.DeleteProduct(idCart, idProduct);
-                return Ok();
+                await _service.DeleteProductFromCart(idCart, idProduct);
+                return NoContent();
             }
             catch(Exception ex)
             {
@@ -82,14 +81,13 @@ namespace ApiCart.Controllers
         }
 
         [HttpDelete("delete/{id}")]
-        [ProducesResponseType(200)]
-        [ProducesResponseType(400)]
+        [ProducesResponseType(204)]
         public async Task<IActionResult> delete(int id)
         {
             try
             {
                 await _service.Delete(id);
-                return Ok();
+                return NoContent();
             }
             catch(Exception ex)
             {
@@ -98,15 +96,28 @@ namespace ApiCart.Controllers
         }
 
         [HttpPost("finish/{id}")]
-        [Produces("application/json")]
-        [ProducesResponseType(200)]
-        [ProducesResponseType(400)]
+        [ProducesResponseType(typeof(FinishCartModel), 200)]
         public async Task<IActionResult> finish(int id)
         {
             try
             {
                 var finished = await _service.Finish(id);
                 return Ok(finished);
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost("new-product/{id}")]
+        [ProducesResponseType(typeof(CartModel), 200)]
+        public async Task<IActionResult> InsertNewProduct(int idCart, [FromBody] ProductCartModel model)
+        {
+            try
+            {
+                var cart = await _service.InsertNewProducts(idCart, model);
+                return Ok(cart);
             }
             catch(Exception ex)
             {

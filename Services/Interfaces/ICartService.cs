@@ -1,4 +1,6 @@
-﻿using ApiCart.Models;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using ApiCart.Models;
 
 namespace ApiCart.Services.Interfaces
 {
@@ -6,9 +8,10 @@ namespace ApiCart.Services.Interfaces
     {
         Task<List<CartModel>> ListAll();
         Task<CartModel> GetByID(long id);
-        Task<CartModel> Create(ProductModel product, long idCart);
+        Task<CartModel> Create(List<ProductCartModel> products);
+        Task<CartModel> InsertNewProducts(long idCart, ProductCartModel product);
         Task<FinishCartModel> Finish(int id);
-        Task DeleteProduct(long idCart, long idProduct);
+        Task DeleteProductFromCart(long idCart, long idProduct);
         Task Delete(int id);
     }
 }

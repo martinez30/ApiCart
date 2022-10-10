@@ -1,4 +1,6 @@
-﻿namespace ApiCart.Domain
+﻿using System;
+
+namespace ApiCart.Domain
 {
     public class Base
     {

@@ -1,4 +1,6 @@
-﻿namespace ApiCart.Utils
+﻿using System;
+
+namespace ApiCart.Utils
 {
     public class GenerateID
     {
